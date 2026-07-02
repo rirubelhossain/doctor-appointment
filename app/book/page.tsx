@@ -1,13 +1,42 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 export default function BookPage() {
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const data = {
+      fullName: formData.get("fullName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      doctor: formData.get("doctor"),
+      appointment: `${formData.get("date")}T${formData.get("time")}:00`,
+      message: formData.get("message"),
+    };
+
+    await fetch("/api/appointments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    setMessage("Appointment submitted successfully!");
+    event.currentTarget.reset();
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-100">
       <nav className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold text-blue-600">
-            MediCare
-          </h1>
+          <h1 className="text-3xl font-extrabold text-blue-600">MediCare</h1>
 
           <div className="flex gap-8 font-semibold text-gray-700">
             <Link href="/" className="hover:text-blue-600">Home</Link>
@@ -16,10 +45,7 @@ export default function BookPage() {
             <Link href="/about" className="hover:text-blue-600">About</Link>
           </div>
 
-          <Link
-            href="/login"
-            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold"
-          >
+          <Link href="/login" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">
             Login
           </Link>
         </div>
@@ -35,35 +61,39 @@ export default function BookPage() {
             Fill out the form below to request your appointment.
           </p>
 
-          <form className="grid gap-5">
-            <input className="border rounded-xl px-4 py-3" placeholder="Full Name" />
+          <form onSubmit={handleSubmit} className="grid gap-5">
+            <input name="fullName" required className="border rounded-xl px-4 py-3" placeholder="Full Name" />
 
-            <input className="border rounded-xl px-4 py-3" type="email" placeholder="Email Address" />
+            <input name="email" required className="border rounded-xl px-4 py-3" type="email" placeholder="Email Address" />
 
-            <input className="border rounded-xl px-4 py-3" placeholder="Phone Number" />
+            <input name="phone" required className="border rounded-xl px-4 py-3" placeholder="Phone Number" />
 
-            <select className="border rounded-xl px-4 py-3">
-              <option>Select Doctor</option>
+            <select name="doctor" required className="border rounded-xl px-4 py-3">
+              <option value="">Select Doctor</option>
               <option>Dr. John Smith - Cardiologist</option>
               <option>Dr. Sarah Lee - Dentist</option>
               <option>Dr. David Khan - Neurologist</option>
             </select>
 
-            <input className="border rounded-xl px-4 py-3" type="date" />
+            <input name="date" required className="border rounded-xl px-4 py-3" type="date" />
 
-            <input className="border rounded-xl px-4 py-3" type="time" />
+            <input name="time" required className="border rounded-xl px-4 py-3" type="time" />
 
             <textarea
+              name="message"
               className="border rounded-xl px-4 py-3"
               placeholder="Describe your problem"
             />
 
-            <button
-              type="button"
-              className="bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700"
-            >
+            <button className="bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">
               Submit Appointment
             </button>
+
+            {message && (
+              <p className="bg-green-100 text-green-700 p-4 rounded-xl font-bold">
+                {message}
+              </p>
+            )}
           </form>
         </div>
       </section>
