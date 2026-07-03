@@ -7,30 +7,36 @@ export default function BookPage() {
   const [message, setMessage] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+  const form = event.currentTarget;
+  const formData = new FormData(form);
 
-    const data = {
-      fullName: formData.get("fullName"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      doctor: formData.get("doctor"),
-      appointment: `${formData.get("date")}T${formData.get("time")}:00`,
-      message: formData.get("message"),
-    };
+  const data = {
+    fullName: formData.get("fullName"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    doctor: formData.get("doctor"),
+    appointment: `${formData.get("date")}T${formData.get("time")}:00`,
+    message: formData.get("message"),
+  };
 
-    await fetch("/api/appointments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+  const response = await fetch("/api/appointments", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-    setMessage("Appointment submitted successfully!");
-    event.currentTarget.reset();
+  if (!response.ok) {
+    setMessage("Something went wrong. Check VS Code terminal.");
+    return;
   }
+
+  setMessage("Appointment submitted successfully!");
+  form.reset();
+}
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-100">
