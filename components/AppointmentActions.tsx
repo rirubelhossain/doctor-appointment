@@ -16,9 +16,7 @@ export default function AppointmentActions({
   async function updateStatus(newStatus: string) {
     await fetch(`/api/appointments/${id}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
     });
 
@@ -34,12 +32,12 @@ export default function AppointmentActions({
   }
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex items-center gap-2 whitespace-nowrap">
       <select
-  value={status}
-  onChange={(e) => updateStatus(e.target.value)}
-  className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-sm"
->
+        value={status}
+        onChange={(e) => updateStatus(e.target.value)}
+        className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-xs"
+      >
         <option value="Pending">Pending</option>
         <option value="Approved">Approved</option>
         <option value="Rejected">Rejected</option>
@@ -49,7 +47,7 @@ export default function AppointmentActions({
 
       <button
         onClick={deleteAppointment}
-        className="bg-slate-800 text-white px-3 py-1 rounded"
+        className="bg-slate-800 text-white px-2 py-1 rounded text-xs"
       >
         Delete
       </button>

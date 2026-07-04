@@ -3,9 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export default async function AdminPage() {
   const appointments = await prisma.appointment.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
   return (
@@ -16,58 +14,60 @@ export default async function AdminPage() {
         </h1>
 
         <p className="text-gray-600 mb-8">
-          View all doctor appointment requests.
+          View and manage doctor appointment requests.
         </p>
 
-        <table className="w-full border">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="p-3 border w-[15%]">Name</th>
-<th className="p-3 border w-[15%]">Email</th>
-<th className="p-3 border w-[12%]">Phone</th>
-<th className="p-3 border w-[18%]">Doctor</th>
-<th className="p-3 border w-[15%]">Appointment</th>
-<th className="p-3 border w-[10%]">Status</th>
-<th className="p-3 border w-[15%]">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {appointments.map((item) => (
-              <tr key={item.id}>
-                <td className="p-3 border">{item.fullName}</td>
-                <td className="p-3 border">{item.email}</td>
-                <td className="p-3 border">{item.phone}</td>
-                <td className="p-3 border">{item.doctor}</td>
-                <td className="p-3 border">
-                  {new Date(item.appointment).toLocaleString()}
-                </td>
-                <td className="p-3 border">
-  <span
-    className={`px-3 py-1 rounded-full text-white font-semibold
-      ${
-        item.status === "Approved"
-          ? "bg-green-600"
-          : item.status === "Rejected"
-          ? "bg-red-600"
-          : "bg-yellow-500"
-      }`}
-  >
-    {item.status}
-  </span>
-</td>
-
-                <td className="p-3 border">
-                    <AppointmentActions
-    id={item.id}
-    status={item.status}
-  />
-                </td>
-
+        <div className="overflow-x-auto">
+          <table className="w-full table-fixed border text-sm">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="p-3 border w-[14%]">Name</th>
+                <th className="p-3 border w-[18%]">Email</th>
+                <th className="p-3 border w-[12%]">Phone</th>
+                <th className="p-3 border w-[18%]">Doctor</th>
+                <th className="p-3 border w-[14%]">Appointment</th>
+                <th className="p-3 border w-[10%]">Status</th>
+                <th className="p-3 border w-[14%]">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {appointments.map((item) => (
+                <tr key={item.id} className="hover:bg-slate-50">
+                  <td className="p-3 border truncate">{item.fullName}</td>
+                  <td className="p-3 border truncate">{item.email}</td>
+                  <td className="p-3 border truncate">{item.phone}</td>
+                  <td className="p-3 border truncate">{item.doctor}</td>
+                  <td className="p-3 border text-xs">
+                    {new Date(item.appointment).toLocaleString()}
+                  </td>
+
+                  <td className="p-3 border">
+                    <span
+                      className={`inline-block w-24 text-center px-2 py-1 rounded-full text-white text-xs font-bold ${
+                        item.status === "Approved"
+                          ? "bg-green-600"
+                          : item.status === "Rejected"
+                          ? "bg-red-600"
+                          : item.status === "Completed"
+                          ? "bg-blue-600"
+                          : item.status === "Cancelled"
+                          ? "bg-slate-600"
+                          : "bg-yellow-500"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+
+                  <td className="p-3 border">
+                    <AppointmentActions id={item.id} status={item.status} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   );
