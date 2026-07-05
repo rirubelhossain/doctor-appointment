@@ -17,13 +17,20 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({
-    message: "Login successful",
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-  });
+  const response = NextResponse.json({
+  message: "Login successful",
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  },
+});
+
+response.cookies.set("admin_login", "true", {
+  httpOnly: true,
+  path: "/",
+});
+
+return response;
 }

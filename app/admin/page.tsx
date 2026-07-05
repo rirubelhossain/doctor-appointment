@@ -1,7 +1,16 @@
 import AppointmentActions from "@/components/AppointmentActions";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import LogoutButton from "@/components/LogoutButton";
 
 export default async function AdminPage() {
+  const cookieStore = await cookies();
+const isLoggedIn = cookieStore.get("admin_login");
+
+if (!isLoggedIn) {
+  redirect("/login");
+}
   const appointments = await prisma.appointment.findMany({
     orderBy: { createdAt: "desc" },
   });
@@ -9,13 +18,13 @@ export default async function AdminPage() {
   return (
     <main className="min-h-screen bg-slate-100 px-6 py-12">
       <section className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl p-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-4">
-          Admin Dashboard
-        </h1>
+        <div className="flex items-center justify-between mb-4">
+  <h1 className="text-4xl font-bold text-blue-600">
+    Admin Dashboard
+  </h1>
 
-        <p className="text-gray-600 mb-8">
-          View and manage doctor appointment requests.
-        </p>
+  <LogoutButton />
+</div>
 
         <div className="overflow-x-auto">
           <table className="w-full table-fixed border text-sm">
