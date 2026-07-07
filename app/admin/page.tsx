@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
-
+import Navbar from "@/components/Navbar";
 export default async function AdminPage() {
   const cookieStore = await cookies();
 const isLoggedIn = cookieStore.get("admin_login");
